@@ -19,7 +19,7 @@ app.use(express.json());
 // Use CORS middleware
 app.use(cors(
   {
-    origin :"https://quick-publish-news-press.vercel.app"
+    origin :"https://quick-public.vercel.app"
   }
 ));  // This will allow all origins by default
 
