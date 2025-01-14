@@ -50,7 +50,7 @@ export default function AdNewsList() {
     setLoading(true);
     try {
       const response = await axios.post(
-        'https://quick-publish-news-press.onrender.com/api/v1/employee/accept_news',
+        'https://quick-public.onrender.com/api/v1/employee/accept_news',
         { newsId: id },
         { headers: { token } }
       );
@@ -75,7 +75,7 @@ export default function AdNewsList() {
     setLoading(true);
     try {
       const response = await axios.post(
-        'https://quick-publish-news-press.onrender.com/api/v1/employee/reject_news',
+        'https://quick-public.onrender.com/api/v1/employee/reject_news',
         { newsId: id },
         { headers: { token } }
       );

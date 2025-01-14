@@ -57,7 +57,7 @@ export default function AdDraftPage() {
 
     try {
       const response = await axios.post(
-        'https://quick-publish-news-press.onrender.com/api/v1/normaluser/submitadnews',
+        'https://quick-public.onrender.com/api/v1/normaluser/submitadnews',
         { ...adNewsData },
         {
           headers: {
@@ -94,7 +94,7 @@ export default function AdDraftPage() {
       };
        
       const response = await axios.post(
-        "https://quick-publish-news-press.onrender.com/api/v1/payment", 
+        "https://quick-public.onrender.com/api/v1/payment", 
         { product: productData },
         { headers: { token } }
       );

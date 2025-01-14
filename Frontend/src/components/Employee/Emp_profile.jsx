@@ -42,7 +42,7 @@ export default function Emp_profile() {
 
   const handleUserInfo = async () => {
     try {
-      const response = await axios.get("https://quick-publish-news-press.onrender.com/api/v1/normaluser/profile", {
+      const response = await axios.get("https://quick-public.onrender.com/api/v1/normaluser/profile", {
         headers: {
           token  
         }

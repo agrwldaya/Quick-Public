@@ -26,7 +26,7 @@ const SignupStep1 = ({handleClientStep}) => {
     
     try {
       const response = await axios.post(
-        "https://quick-publish-news-press.onrender.com/api/v1/client/sendotp",
+        "https://quick-public.onrender.com/api/v1/client/sendotp",
         { email: formData.companyMail }
       );
       if (response.data.success) {

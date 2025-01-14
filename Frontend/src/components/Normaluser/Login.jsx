@@ -15,7 +15,7 @@ export default function Login({ setAuth }) {  // Receive setAuth prop to manage 
     e.preventDefault();  // Prevent form submission from refreshing the page
 
     try {
-      const response = await axios.post("https://quick-publish-news-press.onrender.com/api/v1/normaluser/login", { email, password });
+      const response = await axios.post("https://quick-public.onrender.com/api/v1/normaluser/login", { email, password });
       if (response.data.success) {
         console.log(response.data);
         toast.success(response.data.message);

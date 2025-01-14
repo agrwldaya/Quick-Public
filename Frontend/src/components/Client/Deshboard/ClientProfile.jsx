@@ -15,7 +15,7 @@ export default function ClientProfile() {
   const getUserDetails = async () => {
     try {
       // console.log(token)
-      const response = await axios.get("https://quick-publish-news-press.onrender.com/api/v1/client/get_profile", {
+      const response = await axios.get("https://quick-public.onrender.com/api/v1/client/get_profile", {
         headers: {token} // Correct header format
       });
       //console.log("hello")

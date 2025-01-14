@@ -14,8 +14,8 @@ export default function SuccessPage({ handleStep }) {
    
   
   // URLs based on news type
-  const url1 = "https://quick-publish-news-press.onrender.com/api/v1/normaluser/final_localnews_submit";
-  const url2 = "https://quick-publish-news-press.onrender.com/api/v1/normaluser/final_adnews_submit";
+  const url1 = "https://quick-public.onrender.com/api/v1/normaluser/final_localnews_submit";
+  const url2 = "https://quick-public.onrender.com/api/v1/normaluser/final_adnews_submit";
   const url = newsType === "Local" ? url1 : url2;
 
    

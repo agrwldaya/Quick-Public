@@ -32,7 +32,7 @@ export default function ClientOtp({handleClientStep}) {
 
     try {
       console.log(fullData);
-      const response = await axios.post("https://quick-publish-news-press.onrender.com/api/v1/client/verif_company_mail", fullData);
+      const response = await axios.post("https://quick-public.onrender.com/api/v1/client/verif_company_mail", fullData);
       console.log("response");
     
       // Check the success flag in the response data

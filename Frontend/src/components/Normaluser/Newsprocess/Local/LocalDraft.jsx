@@ -46,7 +46,7 @@ export default function DraftPage() {
     setError(null);
     try {
       const response = await axios.post(
-        "https://quick-publish-news-press.onrender.com/api/v1/normaluser/submitlocalnews",
+        "https://quick-public.onrender.com/api/v1/normaluser/submitlocalnews",
         { ...localNewData },
         {
           headers: {
@@ -83,7 +83,7 @@ export default function DraftPage() {
       };
        
       const response = await axios.post(
-        "https://quick-publish-news-press.onrender.com/api/v1/payment", 
+        "https://quick-public.onrender.com/api/v1/payment", 
         { product: productData },
         { headers: { token } }
       );

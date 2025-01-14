@@ -40,7 +40,7 @@ const SignupStep2 = ({handleClientStep}) => {
 
     try {
       const response = await axios.post(
-        "https://quick-publish-news-press.onrender.com/api/v1/client/signup",
+        "https://quick-public.onrender.com/api/v1/client/signup",
         formDataToSend,
         {
           headers: {

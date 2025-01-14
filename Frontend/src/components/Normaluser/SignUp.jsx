@@ -29,7 +29,7 @@ export default function Signup() {
     e.preventDefault(); 
     dispatch(AuthSliceActions.addData(formData))
     try {
-      const response = await axios.post("https://quick-publish-news-press.onrender.com/api/v1/normaluser/sendotp", {email:formData.usermail});
+      const response = await axios.post("https://quick-public.onrender.com/api/v1/normaluser/sendotp", {email:formData.usermail});
        if(response.data.success){
         toast.success(response.data.message)
         navigate("/normal_user_otp");

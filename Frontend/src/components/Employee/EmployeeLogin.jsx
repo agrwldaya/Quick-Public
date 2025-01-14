@@ -16,7 +16,7 @@ export default function EmployeeLogin({ setAuth }) {
     e.preventDefault();   
    
     try {
-      const response = await axios.post("https://quick-publish-news-press.onrender.com/api/v1/employee/login", { email, password });
+      const response = await axios.post("https://quick-public.onrender.com/api/v1/employee/login", { email, password });
       if (response.data.success) {
          
           dispatch(EmpSliceActions.getProfile(response.data.user))

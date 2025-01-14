@@ -15,7 +15,7 @@ export default function NewsCartLocal() {
     if (token) {
       try {
         const response = await axios.post(
-          'https://quick-publish-news-press.onrender.com/api/v1/normaluser/profile',
+          'https://quick-public.onrender.com/api/v1/normaluser/profile',
           {},
           { headers: { token } }
         )

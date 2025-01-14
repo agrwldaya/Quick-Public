@@ -22,7 +22,7 @@ export default function EmployeeList() {
   const getEmpList = async () => {
     try {
    
-      const response = await axios.get("https://quick-publish-news-press.onrender.com/api/v1/client/get_profile", {
+      const response = await axios.get("https://quick-public.onrender.com/api/v1/client/get_profile", {
         headers: {token} // Correct header format
       });
       if (response.data.success) {

@@ -52,7 +52,7 @@ export default function AccLocal() {
     setLoading(true);
     try {
       const response = await axios.post(
-        'https://quick-publish-news-press.onrender.com/api/v1/employee/publish_news',
+        'https://quick-public.onrender.com/api/v1/employee/publish_news',
         { newsId: id },
         { headers: { token } }
       );
@@ -77,7 +77,7 @@ export default function AccLocal() {
     setLoading(true);
     try {
       const response = await axios.post(
-        'https://quick-publish-news-press.onrender.com/api/v1/employee/pending_news',
+        'https://quick-public.onrender.com/api/v1/employee/pending_news',
         { newsId: id },
         { headers: { token } }
       );

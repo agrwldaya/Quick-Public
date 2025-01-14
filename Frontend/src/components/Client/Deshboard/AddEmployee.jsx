@@ -31,7 +31,7 @@ export default function AddEmployee() {
     }
 
     try {
-      const response = await axios.post("https://quick-publish-news-press.onrender.com/api/v1/client/addemployee", formData, {
+      const response = await axios.post("https://quick-public.onrender.com/api/v1/client/addemployee", formData, {
         headers: {
           token,
           "Content-Type": "multipart/form-data",

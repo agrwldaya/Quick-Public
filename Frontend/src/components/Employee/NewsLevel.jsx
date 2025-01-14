@@ -39,7 +39,7 @@ export default function NewsLevel() {
         if (token) {
           try {
             const response = await axios.post(
-              'https://quick-publish-news-press.onrender.com/api/v1/employee/get_news',
+              'https://quick-public.onrender.com/api/v1/employee/get_news',
               {}, // This empty object is essential for Axios
               { headers: { token } }
             );
@@ -66,7 +66,7 @@ export default function NewsLevel() {
     
         try {
             const response = await axios.post(
-                'https://quick-publish-news-press.onrender.com/api/v1/employee/emp_profile',
+                'https://quick-public.onrender.com/api/v1/employee/emp_profile',
                 {},
                 headers
             );

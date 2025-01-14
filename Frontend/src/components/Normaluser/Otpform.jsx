@@ -28,7 +28,7 @@ export default function Otpform() {
     const fullData = {...authData.SignupData,otp:enteredOtp}
      
     try {
-      const response = await axios.post("https://quick-publish-news-press.onrender.com/api/v1/normaluser/signup",fullData);
+      const response = await axios.post("https://quick-public.onrender.com/api/v1/normaluser/signup",fullData);
       console.log(response)
       if(response.data.success){
         toast.success(response.data.message)
