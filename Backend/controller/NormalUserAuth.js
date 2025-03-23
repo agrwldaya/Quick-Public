@@ -162,9 +162,7 @@ const submitLocalNews = async (req, res) => {
       headline, body, eventDate, eventTime, eventLocation, eventState, eventCity, price,
       eventPincode, wordSize, newspaper, message, publishedDate, nearestCenterPc, userId,
     } = req.body;
-
-     
-
+    
     if (!headline || !body || !eventDate || !eventLocation || !eventState || !eventCity ||
       !eventPincode || !wordSize || !newspaper || !message || !price ||
       !publishedDate || !nearestCenterPc || !userId) {
@@ -231,9 +229,6 @@ const submitLocalNews = async (req, res) => {
     
     await localNews.save();
     
-
- 
- 
     // Update Employee and User models
     await EmployeeModel.findByIdAndUpdate(
       { _id: employee._id },
