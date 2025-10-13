@@ -22,7 +22,8 @@ const uploadFile = async (file, folder, quality) => {
 const Nu_sendOtp = async (req, res) => {
   try {
     const { email } = req.body;
-    const checkUserPresent = await NormalUserModel.findOne({ email });
+    console.log(email)
+    const checkUserPresent = await NormalUserModel.findOne({ usermail:email });
 
     if (checkUserPresent) {
       return res.status(401).json({
@@ -105,14 +106,18 @@ const Nu_signup = async (req, res) => {
         message: "All fields are required!",
       });
     }
-   
+    console.log(req.body)
+
     const checkMail = await NormalUserModel.findOne({ usermail });
     if (checkMail) {
+      console.log(checkMail)
       return res.status(409).json({
         success: false,
         message: "User already exists!",
       });
     }
+    console.log(checkMail)
+     
      
     const otpRecords = await Otpmodel.find({ email: usermail }).sort({ createdAt: -1 }).limit(1);
     
@@ -136,7 +141,7 @@ const Nu_signup = async (req, res) => {
       isprofileComplete: true,
     });
  
-     
+    console.log(newUser)
     const token = jwt.sign({ id: newUser._id, email: usermail }, process.env.JWT_SECRET);
 
     return res.status(201).json({
@@ -154,7 +159,6 @@ const Nu_signup = async (req, res) => {
   }
 };
 
-
 // Submit Local News
 const submitLocalNews = async (req, res) => {
   try {
@@ -162,10 +166,13 @@ const submitLocalNews = async (req, res) => {
       headline, body, eventDate, eventTime, eventLocation, eventState, eventCity, price,
       eventPincode, wordSize, newspaper, message, publishedDate, nearestCenterPc, userId,
     } = req.body;
-    
+    // console.log(req.body)
+    // console.log(req.userId)
+
     if (!headline || !body || !eventDate || !eventLocation || !eventState || !eventCity ||
       !eventPincode || !wordSize || !newspaper || !message || !price ||
       !publishedDate || !nearestCenterPc || !userId) {
+      console.log("All fields are required")
       return res.status(400).json({
         success: false,
         message: "All fields are required",
@@ -377,10 +384,9 @@ const submitAdNews = async (req, res) => {
 // Get User Information
 const getUserInfo = async (req, res) => {
   try {
- 
-    
     // Fetch the user and populate cart fields
     const user = await NormalUserModel.findOne({ _id: req.body.userId })
+      .populate("username").populate("usermail").populate("phoneNo").populate("userState").populate("userCity").populate("userPincode")
       .populate("LocalNewCart")
       .populate("AdNewCart")
       .select("-password") // Exclude sensitive fields like password
@@ -392,11 +398,21 @@ const getUserInfo = async (req, res) => {
         message: "User not found",
       });
     }
-    
+     const userinfo = {
+      username: user.username,
+      usermail: user.usermail,
+      phoneNo: user.phoneNo,
+      userState: user.userState,
+      userCity: user.userCity,
+      userPincode: user.userPincode,
+      profilePhoto: user.profilePhoto || "/profile_pic.jpg", // Default profile photo
+    }
+
     
     return res.status(200).json({
       success: true,
       message: "User info retrieved successfully",
+      userinfo,
       LocalNews: user.LocalNewCart || [], // Default to an empty array
       AdNews: user.AdNewCart || [], // Default to an empty array
     });
@@ -523,7 +539,8 @@ const localNewsPayment = async (req, res) => {
 const AdNewsPayment = async (req, res) => {
   try { 
     const { paymentId, userId } = req.body; // Accept userId to track the user
-   
+
+    console.log(req.body)
     
     // Check if required fields are provided
     if (!paymentId || !userId) {
@@ -546,10 +563,10 @@ const AdNewsPayment = async (req, res) => {
     // Update the Ad news entry with payment information
     const updatedAdNewsEntry = await AdNewsCart.findByIdAndUpdate(
       latestAdNewsEntry._id,
-      { $set: { paymentId, isPaymentDone: true } },
+      { $set: {paymentId: paymentId, isPaymentDone: true } },
       { new: true }
     );
-     
+    console.log(updatedAdNewsEntry);
 
     // Check if the update was successful
     if (!updatedAdNewsEntry) {
@@ -563,6 +580,7 @@ const AdNewsPayment = async (req, res) => {
     res.status(200).json({
       success: true,
       message: "Ad news submitted successfully!",
+      paymentId,
       data: updatedAdNewsEntry,
     });
 
@@ -575,5 +593,42 @@ const AdNewsPayment = async (req, res) => {
   }
 };
 
+const updateProfile = async (req, res) => {
+  try {
+    const { username, usermail, userCity, userPincode, userState, phoneNo, userId } = req.body;
 
-export {getUserInfo,submitLocalNews,submitAdNews,Nu_signup,Nu_Login,Nu_sendOtp,localNewsPayment,AdNewsPayment}
+    // Update user
+    const user = await NormalUserModel.findByIdAndUpdate(
+      userId, 
+      {
+        username,
+        usermail,
+        userCity,
+        userPincode,
+        userState,
+        phoneNo
+      },
+      { new: true } // return updated document
+    );
+
+
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+   const userinfo = {username, usermail, userCity, userPincode, userState, phoneNo}
+
+    res.status(200).json({
+      success:true,
+      message: "Profile updated successfully",
+      userinfo
+    });
+
+  } catch (error) {
+    console.error("Error updating profile:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
+
+export {getUserInfo,submitLocalNews,submitAdNews,Nu_signup,Nu_Login,Nu_sendOtp,localNewsPayment,AdNewsPayment,updateProfile}

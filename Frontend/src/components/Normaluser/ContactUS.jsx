@@ -1,30 +1,60 @@
 'use client'
 
 import { useState } from 'react'
+import axios from 'axios'
+import { toast } from 'react-toastify'
+import { useNavigate } from 'react-router-dom'
 
 export default function ContactUs() {
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [message, setMessage] = useState('')
   const [isSubmitted, setIsSubmitted] = useState(false)
+  const [loading, setLoading] = useState(false)
 
-  const handleSubmit = (e) => {
+  const token = localStorage.getItem('token')
+  const navigate = useNavigate()
+
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    // Here you would typically send the form data to your backend
-    console.log('Form submitted:', { name, email, message })
-    setIsSubmitted(true)
-    // Reset form fields
-    setName('')
-    setEmail('')
-    setMessage('')
-    // Hide the success message after 5 seconds
-    setTimeout(() => setIsSubmitted(false), 5000)
+    setLoading(true)
+
+   if(token){
+     try {
+      const response = await axios.post("http://localhost:4000/api/v1/contact", {
+        name,
+        email,
+        message
+      })
+
+      if (response.data.success) {
+        setIsSubmitted(true)
+        toast.success("Message sent successfully ✅")
+        // Reset form
+        setName('')
+        setEmail('')
+        setMessage('')
+        // Hide success after 5s
+        setTimeout(() => setIsSubmitted(false), 5000)
+      } else {
+        toast.error(response.data.message || "Something went wrong ❌")
+      }
+    } catch (error) {
+      console.error("Error sending message:", error)
+      toast.error("Failed to send message. Try again later ❌")
+    } finally {
+      setLoading(false)
+    }
+   }else{
+    navigate('/normal_user_signup')
+   }
   }
 
   return (
-    <div className="max-w-screen mx-auto mt-10 bg-slate-600  px-4 py-12 sm:px-6 lg:px-8">
+    <div className="max-w-screen mx-auto mt-10 bg-slate-600 px-4 py-12 sm:px-6 lg:px-8">
       <h1 className="text-3xl text-gray-50 font-bold text-center mb-8">Contact Us</h1>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        {/* LEFT SIDE INFO */}
         <div>
           <h2 className="text-xl text-gray-100 font-semibold mb-4">Get in Touch</h2>
           <p className="text-gray-100 mb-4">
@@ -52,20 +82,22 @@ export default function ContactUs() {
             </p>
           </div>
         </div>
+
+        {/* RIGHT SIDE FORM */}
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label htmlFor="name" className="block   text-sm font-medium text-gray-100">Name</label>
+            <label htmlFor="name" className="block text-sm font-medium text-gray-100">Name</label>
             <input
               type="text"
               id="name"
               value={name}
               onChange={(e) => setName(e.target.value)}
               required
-              className="mt-1 bg-slate-400   block w-full rounded-md border-slate-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+              className="mt-1 bg-slate-400 block w-full rounded-md border-slate-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
             />
           </div>
           <div>
-            <label htmlFor="email" className="block text-sm font-medium   text-gray-100">Email</label>
+            <label htmlFor="email" className="block text-sm font-medium text-gray-100">Email</label>
             <input
               type="email"
               id="email"
@@ -88,17 +120,19 @@ export default function ContactUs() {
           </div>
           <button
             type="submit"
-            className="w-full bg-slate-700 shadow-md text-white py-2 px-4 rounded-md hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50 transition duration-150 ease-in-out"
+            disabled={loading}
+            className="w-full bg-slate-700 shadow-md text-white py-2 px-4 rounded-md hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50 transition duration-150 ease-in-out disabled:opacity-50"
           >
-            Send Message
+            {loading ? "Sending..." : "Send Message"}
           </button>
         </form>
       </div>
-      {isSubmitted && (
+
+      {/* {isSubmitted && (
         <div className="mt-4 p-4 bg-green-100 text-green-700 rounded-md">
-          Thank you for your message. We'll get back to you soon!
+          ✅ Thank you for your message. We'll get back to you soon!
         </div>
-      )}
+      )} */}
     </div>
   )
 }

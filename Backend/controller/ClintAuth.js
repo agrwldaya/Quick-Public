@@ -8,6 +8,7 @@ import cloudinary from 'cloudinary';
  
 import { EmployeeModel } from "../model/employesUser.js";
 import NewsPaperModel from "../model/newspaper.js";
+import { validateEmail } from "../utils/emailValidater.js";
  
 
  const uploadFile = async (file, folder, quality) => {
@@ -115,46 +116,70 @@ import NewsPaperModel from "../model/newspaper.js";
     }
 };
 
-  const client_sendOtp = async(req,res)=>{
-    try {
-      const {email} = req.body;
-      const checkUserPresent = await   Clintmodel.findOne({ email });
-     
-      if (checkUserPresent) {
-        return res.status(401).json({
-          success: false,
-          message: `User is already registered`,
-        });
-      }
-  
-      let otp = otpGenerator.generate(6, {
+const client_sendOtp = async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    // Check if email was provided
+    if (!email) {
+      return res.status(400).json({
+        success: false,
+        message: "Email is required",
+      });
+    }
+
+    // Validate email format
+    if (!validateEmail(email)) {
+      return res.status(400).json({
+        success: false,
+        message: "Email format is not valid",
+      });
+    }
+
+    // Check if user already exists
+    const checkUserPresent = await Clintmodel.findOne({ companyMail:email });
+    if (checkUserPresent) {
+      return res.status(401).json({
+        success: false,
+        message: "User is already registered",
+      });
+    }
+
+    // Generate OTP
+    let otp = otpGenerator.generate(6, {
+      upperCaseAlphabets: false,
+      lowerCaseAlphabets: false,
+      specialChars: false,
+    });
+
+    // Ensure unique OTP
+    let result = await Otpmodel.findOne({ otp });
+    while (result) {
+      otp = otpGenerator.generate(6, {
         upperCaseAlphabets: false,
         lowerCaseAlphabets: false,
         specialChars: false,
       });
-  
-    let result = await Otpmodel.findOne({ otp: otp });
-    while (result) {
-      otp = otpGenerator.generate(6, {
-        upperCaseAlphabets: false,
-      });
-      result = await Otpmodel.findOne({ otp: otp });
+      result = await Otpmodel.findOne({ otp });
     }
-    const otpPayload = { email, otp };
-    const otpBody = await Otpmodel.create(otpPayload);
-  
-    
+
+    // Save OTP to DB
+    await Otpmodel.create({ email, otp });
+
     res.status(200).json({
       success: true,
-      message: 'OTP sent successfully',
-      otp,
-      
+      message: "OTP sent successfully. Please check your email inbox.",
+      otp, // ⚠️ remove in production for security
     });
   } catch (error) {
-     
-    return res.status(500).json({ success: false, error: error.message });
+    console.error("Send OTP error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Server error while sending OTP",
+      error: error.message,
+    });
   }
-}
+};
 
 const clinte_Login = async (req, res) => {
     try {

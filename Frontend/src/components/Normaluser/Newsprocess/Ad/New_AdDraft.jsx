@@ -57,11 +57,11 @@ export default function AdDraftPage() {
 
     try {
       const response = await axios.post(
-        'https://quick-public.onrender.com/api/v1/normaluser/submitadnews',
+        'http://localhost:4000/api/v1/normaluser/submitadnews',
         { ...adNewsData },
         {
           headers: {
-            token,
+            "Authorization": `Bearer ${token}`,
             'Content-Type': 'multipart/form-data',
           },
         }
@@ -87,18 +87,20 @@ export default function AdDraftPage() {
     setError(null);
 
     try {
-      const stripe = await loadStripe("pk_test_51PSt3t08e0elFpfHmHJWuYMBDN6lH4lv70KB97nICq2JMHLsYnpa16lqDaOYORRASMTgbTxLewb1KJScLwHrRKc800H5Fy4RNi");
+      const stripe = await loadStripe("pk_test_51S0d0jGPdgkrbvhCb1YyFjZUnvOGVymOY08Kp50qYYSw7tkDOodNL3ZWMLgfhmfqSHFmUcsPdFxMIzrhriZjPtNu002qSKOFq2");
       const productData = {
         contentType: "AdNews",
-        price: (adNewsData.price ? Number(adNewsData.price) : 0)
+        price: Math.floor(adNewsData.price ? Number(adNewsData.price) : 0)
       };
        
       const response = await axios.post(
-        "https://quick-public.onrender.com/api/v1/payment", 
+        "http://localhost:4000/api/v1/payment", 
         { product: productData },
-        { headers: { token } }
+        { headers: { "Authorization": `Bearer ${token}` } }
       );
        
+      
+
        localStorage.setItem("sessionId",response.data.id)
        localStorage.setItem("newsType", 'Ad')
       const result = await stripe.redirectToCheckout({ sessionId: response.data.id });

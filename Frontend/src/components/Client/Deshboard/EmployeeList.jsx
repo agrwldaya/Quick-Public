@@ -22,8 +22,8 @@ export default function EmployeeList() {
   const getEmpList = async () => {
     try {
    
-      const response = await axios.get("https://quick-public.onrender.com/api/v1/client/get_profile", {
-        headers: {token} // Correct header format
+      const response = await axios.get("http://localhost:4000/api/v1/client/get_profile", {
+        headers: { "Authorization": `Bearer ${token}` } // Correct header format
       });
       if (response.data.success) {
           setEmployees(response.data.client.employeeList); // No need to append, just set the new lis

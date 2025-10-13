@@ -13,7 +13,7 @@ export const mailSender = async (email, title, body) => {
     });
 
     let info = await transporter.sendMail({
-      from: '"AapkiNews" <no-reply@aapkinews.com>',
+      from: `"QuickPublish" <${process.env.MAIL_USER}>`,
       to: email,
       subject: title,
       html: body,

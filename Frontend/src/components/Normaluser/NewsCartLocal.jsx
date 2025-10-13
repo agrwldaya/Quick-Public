@@ -4,23 +4,25 @@ import React, { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import axios from 'axios'
 import { toast } from 'react-toastify'
+import { connect } from 'react-redux'
  
 
 export default function NewsCartLocal() {
   const [localNews, setLocalNews] = useState([])
   const [selectedNews, setSelectedNews] = useState(null)
-
+    
   const getNews = async () => {
     const token = localStorage.getItem('token')
     if (token) {
       try {
         const response = await axios.post(
-          'https://quick-public.onrender.com/api/v1/normaluser/profile',
+          'http://localhost:4000/api/v1/normaluser/profile',
           {},
-          { headers: { token } }
+          { headers: { "Authorization": `Bearer ${token}` } }
         )
         if (response.data.success) {
           setLocalNews(response.data.LocalNews || [])
+          
         } else {
           toast.error(response.data.message)
         }
@@ -29,8 +31,9 @@ export default function NewsCartLocal() {
       }
     }
   }
+  const filteredNews = localNews.filter((news)=>news.isPaymentDone==true)
 
-  const formattedLocalNews = localNews.map((news) => ({
+  const formattedLocalNews = filteredNews.map((news) => ({
     id: news._id,
     date: news.eventDate ? new Date(news.eventDate) : null,
     city: news.eventCity,
@@ -47,21 +50,24 @@ export default function NewsCartLocal() {
     newspaper:news.newspaper,
     price:news.price,
     publishedDate: news.publishedDate ? new Date(news.publishedDate) : null,
+    isPaymentDone:news.isPaymentDone,
     status: news.status,
     images: news.images?.length
       ? news.images
       : ['/placeholder.svg?height=200&width=300'],
   }))
-
+  
+  console.log(formattedLocalNews)
  
 
   useEffect(() => {
     getNews()
   }, [])
-
+  
+  
   const handleNewsClick = (news) => setSelectedNews(news)
   const closeNewsDetail = () => setSelectedNews(null)
-
+  console.log(selectedNews)
   return (
     <div className="min-h-screen bg-gray-100 p-4 md:p-8">
       <h1 className="text-3xl font-bold mb-6 text-center">Local News</h1>

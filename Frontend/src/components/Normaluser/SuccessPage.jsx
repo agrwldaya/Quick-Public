@@ -10,14 +10,16 @@ export default function SuccessPage({ handleStep }) {
   const token = localStorage.getItem("token");
   const newsType = localStorage.getItem("newsType");
   const paymentId = localStorage.getItem("sessionId");
-
+  
+  console.log("paymentId",paymentId)
    
   
   // URLs based on news type
-  const url1 = "https://quick-public.onrender.com/api/v1/normaluser/final_localnews_submit";
-  const url2 = "https://quick-public.onrender.com/api/v1/normaluser/final_adnews_submit";
+  const url1 = "http://localhost:4000/api/v1/normaluser/final_localnews_submit";
+  const url2 = "http://localhost:4000/api/v1/normaluser/final_adnews_submit";
   const url = newsType === "Local" ? url1 : url2;
-
+  
+  console.log(url)
    
   const sendDataToServer = async () => {
     try {
@@ -26,19 +28,19 @@ export default function SuccessPage({ handleStep }) {
         { paymentId },
         {
           headers: {
-            token,
+            "Authorization": `Bearer ${token}`,
             "Content-Type": "multipart/form-data",
           },
         }
       );
+
+      console.log(response)
 
       if (response?.status === 200) {
         toast.success("News Submitted Successfully!");
         // Clear localStorage items after successful submission
         localStorage.removeItem("sessionId");
         localStorage.removeItem('newsType');
-
-
       } else {
         throw new Error(response.data.message);
       }

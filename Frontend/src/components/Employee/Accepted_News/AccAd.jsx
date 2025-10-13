@@ -51,9 +51,9 @@ export default function AdNewsList() {
     setLoading(true);
     try {
       const response = await axios.post(
-        'https://quick-public.onrender.com/api/v1/employee/publish_news',
+        'http://localhost:4000/api/v1/employee/publish_news',
         { newsId: id },
-        { headers: { token } }
+        { headers: { "Authorization": `Bearer ${token}` } }
       );
       if (response.data.success) {
         toast.success(response.data.message);
@@ -76,9 +76,9 @@ export default function AdNewsList() {
     setLoading(true);
     try {
       const response = await axios.post(
-        'https://quick-public.onrender.com/api/v1/employee/pending_news',
+        'http://localhost:4000/api/v1/employee/pending_news',
         { newsId: id },
-        { headers: { token } }
+        { headers: { "Authorization": `Bearer ${token}` } }
       );
       if (response.data.success) {
         toast.success("News cancled");

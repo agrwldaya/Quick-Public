@@ -2,8 +2,6 @@ import mongoose from "mongoose";
 
 
 const dbconnect = ()=>{
-    // console.log(process.env.DBURL)
-    
          mongoose.connect(process.env.DBURL)
          .then(()=>{
             console.log("Database connected!");

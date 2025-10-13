@@ -1,6 +1,6 @@
 import express from 'express';
 import dotenv from 'dotenv/config';
-import cors from 'cors';  // Importing the CORS package
+import cors from 'cors'; 
 import dbconnect from './config/database.js';
 import fileUpload from 'express-fileupload';
 import { cloudinaryconnect } from './config/cloudinary.js';
@@ -9,6 +9,7 @@ import { ClientRoute } from './routes/clientAuth.js';
 import { empRoute } from './routes/empRoute.js';
 import { NewsPaperRoute } from './routes/NewsRoute.js';
 import paymentRoute from './routes/paymentRoute.js';
+import Contactrouter from './routes/contactRoutes.js';
 
 const app = express();
 const Port = process.env.PORT || 4000;
@@ -17,11 +18,7 @@ const Port = process.env.PORT || 4000;
 app.use(express.json());
 
 // Use CORS middleware
-app.use(cors(
-  {
-    origin :"https://quick-public.vercel.app"
-  }
-));  // This will allow all origins by default
+app.use(cors());
 
 app.use(fileUpload({
   useTempFiles: true,
@@ -38,8 +35,13 @@ app.use('/api/v1/normaluser', NormalUserRoute);
 app.use('/api/v1/employee', empRoute);
 app.use('/api/v1', NewsPaperRoute);
 app.use('/api/v1', paymentRoute);
+app.use("/api/v1", Contactrouter);
 
 // Start the server
+app.get("/", (req, res) => {
+  res.send("Hello, World!");
+});
+
 app.listen(Port, () => {
   console.log(`App is listening on port ${Port}`);
 });

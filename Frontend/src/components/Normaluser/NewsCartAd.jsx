@@ -14,9 +14,9 @@ export default function AdNewsCart() {
     if (token) {
       try {
         const response = await axios.post(
-          'https://quick-public.onrender.com/api/v1/normaluser/profile',
+          'http://localhost:4000/api/v1/normaluser/profile',
           {},
-          { headers: { token } }
+          { headers: { "Authorization": `Bearer ${token}` } }
         )
         if (response.data.success) {
           setAdNews(response.data.AdNews || [])
@@ -28,8 +28,11 @@ export default function AdNewsCart() {
       }
     }
   }
+  
+   const filteredNew = adNews.filter((news)=>news.isPaymentDone==true);
+    
 
-  const formattedAdNews = adNews.map((ad) => ({
+  const formattedAdNews = filteredNew.map((ad) => ({
     id: ad._id,
     companyName: ad.companyName,
     address: ad.address,

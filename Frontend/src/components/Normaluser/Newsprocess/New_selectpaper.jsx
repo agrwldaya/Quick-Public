@@ -47,7 +47,7 @@ export default function NewspaperSelection({handleStep}) {
 
   const getNewspaper = async () => {
     try {
-      const response = await axios.get("https://quick-public.onrender.com/api/v1/get_newspaper")
+      const response = await axios.get("http://localhost:4000/api/v1/get_newspaper")
       if (response.data.success) {
         setNewspapers(response.data.newspaper)
       } else {

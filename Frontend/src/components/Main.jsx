@@ -23,7 +23,7 @@ export default function Main() {
 
     <div>
       <New_Navbar/>
-      <div className='mt-2 h-7 mb-7'><Navbar02/></div>
+      
       
       {/* {step === 1 && <SelectNewspaper handleStep={handleStep} />} */}
       {step === 1 && <NewspaperSelection handleStep={handleStep} />}

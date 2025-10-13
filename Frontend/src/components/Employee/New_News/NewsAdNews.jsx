@@ -50,9 +50,9 @@ export default function AdNewsList() {
     setLoading(true);
     try {
       const response = await axios.post(
-        'https://quick-public.onrender.com/api/v1/employee/accept_news',
+        'http://localhost:4000/api/v1/employee/accept_news',
         { newsId: id },
-        { headers: { token } }
+        { headers: { "Authorization": `Bearer ${token}` } }
       );
       if (response.data.success) {
         toast.success(response.data.message);
@@ -75,9 +75,9 @@ export default function AdNewsList() {
     setLoading(true);
     try {
       const response = await axios.post(
-        'https://quick-public.onrender.com/api/v1/employee/reject_news',
+        'http://localhost:4000/api/v1/employee/reject_news',
         { newsId: id },
-        { headers: { token } }
+        { headers: { "Authorization": `Bearer ${token}` } }
       );
       if (response.data.success) {
         toast.success("News Rejected");
@@ -96,88 +96,212 @@ export default function AdNewsList() {
     setLoading(false);
   };
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-100 to-gray-200 p-8">
-      <h1 className="text-4xl font-bold text-center mb-8 text-gray-800">Pending Advertisements</h1>
-      <div className='mb-5 font-bold'>
-        <hr />
+    <div className="p-6">
+      {/* Header */}
+      <div className="mb-8">
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900">Pending Advertisements</h1>
+            <p className="text-gray-600 mt-2">Review and manage pending advertisement submissions</p>
+          </div>
+          <div className="flex items-center space-x-2">
+            <div className="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-sm font-medium">
+              {FilteredData.length} Pending
+            </div>
+          </div>
+        </div>
       </div>
 
-      <div className="max-w-screen mx-auto space-y-4">
-        {FilteredData.map((ad, index) => (
-          <div key={ad.id} className="bg-slate-400 rounded-lg shadow-md overflow-hidden">
-            <button
-              onClick={() => toggleExpand(ad.id)}
-              className="w-full p-4 flex justify-between items-center transition-colors duration-200"
-            >
-              <div className="flex items-center space-x-4">
-                <div className="text-lg font-semibold">{index + 1}. {format(ad.publishedDate, 'MMM dd, yyyy')}</div>
-                <div className="text-gray-600">{ad.city}</div>
-                <div className="text-sm text-gray-500">{format(ad.publishedDate, 'HH:mm')}</div>
-              </div>
-              {expandedId === ad.id ? (
-                <span className="text-gray-600">&uarr;</span>
-              ) : (
-                <span className="text-gray-600">&darr;</span>
-              )}
-            </button>
-            {expandedId === ad.id && (
-              <div className="p-4">
-                <h2 className="text-2xl font-bold">{ad.headline}</h2>
-                <span className="inline-block px-2 py-1 text-sm rounded bg-yellow-200">
-                  {ad.contentType}
-                </span>
-                <p className="text-gray-700 mt-4">{ad.body}</p>
-
-                <div className="overflow-x-auto mt-4">
-                  <div className="flex space-x-4">
-                    {ad.images.map((img, index) => (
-                      <div key={index} className="relative">
-                        <img src={img} alt={`Ad image ${index + 1}`} className="rounded-md  w-40  shadow-sm" />
-                        <a
-                          href={img}
-                          download={`image-${index + 1}`}
-                          className="absolute bottom-2 right-2 bg-gray-700 text-white text-xs px-2 py-1 rounded"
-                        >
-                          Download
-                        </a>
+      {/* Ad Cards */}
+      <div className="space-y-6">
+        {FilteredData.length === 0 ? (
+          <div className="text-center py-12">
+            <div className="w-24 h-24 mx-auto mb-4 bg-gray-100 rounded-full flex items-center justify-center">
+              <svg className="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 4V2a1 1 0 011-1h8a1 1 0 011 1v2m0 0V1a1 1 0 011-1h2a1 1 0 011 1v3M7 4H5a1 1 0 00-1 1v16a1 1 0 001 1h14a1 1 0 001-1V5a1 1 0 00-1-1h-2M7 4h10" />
+              </svg>
+            </div>
+            <h3 className="text-lg font-medium text-gray-900 mb-2">No pending advertisements</h3>
+            <p className="text-gray-500">All advertisements have been reviewed</p>
+          </div>
+        ) : (
+          FilteredData.map((ad, index) => (
+            <div key={ad.id} className="bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200">
+              {/* Card Header */}
+              <div className="p-6 border-b border-gray-100">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-4">
+                    <div className="flex-shrink-0">
+                      <div className="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center">
+                        <span className="text-orange-600 font-semibold text-sm">{index + 1}</span>
                       </div>
-                    ))}
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-semibold text-gray-900">{ad.headline}</h3>
+                      <div className="flex items-center space-x-4 mt-1">
+                        <span className="text-sm text-gray-500">{format(ad.publishedDate, 'MMM dd, yyyy')}</span>
+                        <span className="text-sm text-gray-500">{ad.city}</span>
+                        <span className="text-sm text-gray-500">{format(ad.publishedDate, 'HH:mm')}</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex items-center space-x-3">
+                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-orange-100 text-orange-800">
+                      {ad.contentType}
+                    </span>
+                    <button
+                      onClick={() => toggleExpand(ad.id)}
+                      className="p-2 text-gray-400 hover:text-gray-600 transition-colors"
+                    >
+                      {expandedId === ad.id ? (
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
+                        </svg>
+                      ) : (
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                        </svg>
+                      )}
+                    </button>
                   </div>
                 </div>
-
-                <div className="grid grid-cols-2 gap-2 text-sm mt-4">
-                  <div><strong>Company Name:</strong> {ad.companyName}</div>
-                  <div><strong>Address:</strong> {ad.address}</div>
-                  <div><strong>State:</strong> {ad.state}</div>
-                  <div><strong>City:</strong> {ad.city}</div>
-                  <div><strong>Pincode:</strong> {ad.pincode}</div>
-                  <div><strong>Nearest Center Pincode:</strong> {ad.nearestCenterPc}</div>
-                  <div><strong>Newspaper:</strong> {ad.newspaper}</div>
-                  <div><strong>Page:</strong> {ad.page}</div>
-                  <div><strong>Published Date:</strong> {format(ad.publishedDate, 'MMMM dd, yyyy')}</div>
-                  <div><strong>Size:</strong> {ad.size}</div>
-                  <div><strong>Price:</strong> ₹{ad.price}</div>
-                  <div><strong>Payment Done:</strong> {ad.isPaymentDone ? 'Yes' : 'No'}</div>
-                  <div><strong>Company Verified:</strong> {ad.isCompanyVerified ? 'Yes' : 'No'}</div>
-                  <div><strong>Status:</strong> {ad.status}</div>
-                </div>
-
-                <div className="flex justify-end space-x-4 mt-4">
-                  <button
-                  disabled={loading}
-                   onClick={()=>{accept_news(ad.id)}} className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded">
-                    Accept
-                  </button>
-                  <button 
-                  disabled={loading}
-                  onClick={()=>{reject_news(ad.id)}} className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded">
-                    Reject
-                  </button>
-                </div>
               </div>
-            )}
-          </div>
-        ))}
+
+              {/* Expanded Content */}
+              {expandedId === ad.id && (
+                <div className="p-6">
+                  {/* Ad Content */}
+                  <div className="mb-6">
+                    <h4 className="text-sm font-medium text-gray-700 mb-2">Content</h4>
+                    <p className="text-gray-900 leading-relaxed">{ad.body}</p>
+                  </div>
+
+                  {/* Images */}
+                  {ad.images && ad.images.length > 0 && (
+                    <div className="mb-6">
+                      <h4 className="text-sm font-medium text-gray-700 mb-3">Images</h4>
+                      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        {ad.images.map((img, imgIndex) => (
+                          <div key={imgIndex} className="relative group">
+                            <img 
+                              src={img} 
+                              alt={`Ad image ${imgIndex + 1}`} 
+                              className="w-full h-32 object-cover rounded-lg shadow-sm"
+                            />
+                            <a
+                              href={img}
+                              download={`image-${imgIndex + 1}`}
+                              className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-50 transition-all duration-200 rounded-lg flex items-center justify-center opacity-0 group-hover:opacity-100"
+                            >
+                              <span className="bg-white text-gray-800 px-3 py-1 rounded-full text-sm font-medium">
+                                Download
+                              </span>
+                            </a>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Company Details */}
+                  <div className="mb-6">
+                    <h4 className="text-sm font-medium text-gray-700 mb-3">Company Details</h4>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="space-y-3">
+                        <div className="flex justify-between">
+                          <span className="text-sm text-gray-500">Company Name</span>
+                          <span className="text-sm font-medium text-gray-900">{ad.companyName}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-sm text-gray-500">Address</span>
+                          <span className="text-sm font-medium text-gray-900">{ad.address}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-sm text-gray-500">State</span>
+                          <span className="text-sm font-medium text-gray-900">{ad.state}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-sm text-gray-500">City</span>
+                          <span className="text-sm font-medium text-gray-900">{ad.city}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-sm text-gray-500">Pincode</span>
+                          <span className="text-sm font-medium text-gray-900">{ad.pincode}</span>
+                        </div>
+                      </div>
+                      <div className="space-y-3">
+                        <div className="flex justify-between">
+                          <span className="text-sm text-gray-500">Newspaper</span>
+                          <span className="text-sm font-medium text-gray-900">{ad.newspaper}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-sm text-gray-500">Page</span>
+                          <span className="text-sm font-medium text-gray-900">{ad.page}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-sm text-gray-500">Size</span>
+                          <span className="text-sm font-medium text-gray-900">{ad.size}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-sm text-gray-500">Price</span>
+                          <span className="text-sm font-medium text-gray-900">₹{ad.price}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-sm text-gray-500">Status</span>
+                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                            {ad.status}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Payment & Verification Status */}
+                  <div className="mb-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="p-4 bg-green-50 rounded-lg">
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm font-medium text-green-900">Payment Status</span>
+                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                          ad.isPaymentDone ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                        }`}>
+                          {ad.isPaymentDone ? 'Completed' : 'Pending'}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="p-4 bg-blue-50 rounded-lg">
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm font-medium text-blue-900">Company Verified</span>
+                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                          ad.isCompanyVerified ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                        }`}>
+                          {ad.isCompanyVerified ? 'Verified' : 'Not Verified'}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Action Buttons */}
+                  <div className="flex justify-end space-x-3 pt-4 border-t border-gray-100">
+                    <button
+                      onClick={() => reject_news(ad.id)}
+                      disabled={loading}
+                      className="px-6 py-2 border border-red-300 text-red-700 rounded-lg hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    >
+                      {loading ? 'Processing...' : 'Reject'}
+                    </button>
+                    <button
+                      onClick={() => accept_news(ad.id)}
+                      disabled={loading}
+                      className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    >
+                      {loading ? 'Processing...' : 'Accept'}
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          ))
+        )}
       </div>
     </div>
   );

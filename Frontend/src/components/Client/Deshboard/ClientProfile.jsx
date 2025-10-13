@@ -15,8 +15,8 @@ export default function ClientProfile() {
   const getUserDetails = async () => {
     try {
       // console.log(token)
-      const response = await axios.get("https://quick-public.onrender.com/api/v1/client/get_profile", {
-        headers: {token} // Correct header format
+      const response = await axios.get("http://localhost:4000/api/v1/client/get_profile", {
+        headers: { "Authorization": `Bearer ${token}` } // Correct header format
       });
       //console.log("hello")
       if (response.data.success) {
@@ -30,7 +30,10 @@ export default function ClientProfile() {
       toast.error(errorMessage);
     }
   };
- 
+ const editProfile=()=>{
+     toast("Edit functionality is not available at the moment.");
+
+ }
   return (
     <div className="flex flex-col mx-10 mt-10">
       {/* Profile Header */}
@@ -40,7 +43,7 @@ export default function ClientProfile() {
           <h1 className="text-xl font-semibold">{clientData.companyName || "Company Name"}</h1>
         </div>
         <a
-          href="#"
+           onClick={editProfile}
           className="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-500"
         >
           Edit Profile

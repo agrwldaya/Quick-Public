@@ -25,8 +25,8 @@ const AdnewsSchema = new mongoose.Schema({
     documents: [{ type: String, required: true }],  
     isCompanyVerified: { type: Boolean, required: true,default:false },
     price: { type: Number },
-    paymentId:{type:String},
     isPaymentDone: { type: Boolean, default: false },
+    paymentId:{type:String},
     size: { type: String },
     billing: { type: String},
     status: {

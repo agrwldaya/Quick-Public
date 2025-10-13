@@ -1,79 +1,69 @@
-import { useState, useEffect } from 'react'
-import { motion } from 'framer-motion'
-import logo from '/Logo.png'
+"use client"
 
-import { Menu, X } from 'lucide-react'
-import { Link } from 'react-router-dom'
+import { useState } from "react"
+import { motion } from "framer-motion"
+import logo from "/Logo.png"
+import { Menu, X } from "lucide-react"
+import { Link } from "react-router-dom"
 
 export default function Navbar02() {
   const [isOpen, setIsOpen] = useState(false)
-  const [isScrolled, setIsScrolled] = useState(false)
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20)
-    }
-    window.addEventListener('scroll', handleScroll)
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
 
   const navItems = [
-
-    { name: 'Home', href: '#home' },
-    { name: 'About', href: '#about' },
-    { name: 'Services', href: '#services' },
-    { name: 'Blog', href: '#blog' },
-    { name: 'Contact', href: '#contact' },
+    { name: "Home", href: "#home" },
+    { name: "About", href: "#about" },
+    { name: "Services", href: "#services" },
+    { name: "Contact", href: "#contact" },
   ]
-  
-  
+
+  const handleSmoothScroll = (e, href) => {
+    e.preventDefault()
+    const element = document.querySelector(href)
+    if (element) {
+      element.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      })
+    }
+    setIsOpen(false)
+  }
+
   return (
-    <nav
-      className={` w-full z-50 transition-all duration-300 ${
-        isScrolled ? 'bg-white shadow-md' : 'bg-transparent'
-      } `}
-    >
-      <div className="max-w-7xl  mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
+    <nav className="relative w-full   bg-white shadow-md border-b border-slate-200">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-16 lg:h-20">
+          {/* Logo Section */}
           <div className="flex-shrink-0">
-            <Link to="/" className="flex items-center">
+            <Link to="/" className="flex items-center group">
               <img
-                src={logo}
+                src={logo || "/placeholder.svg"}
                 alt="Your Logo"
-                className="w-32 sm:w-40 md:w-48 h-auto" // Adjust width for responsiveness
+                className="w-28 sm:w-36 md:w-44 lg:w-48 h-auto transition-transform duration-200 group-hover:scale-105"
               />
             </Link>
           </div>
+
+          {/* Desktop Navigation */}
           <div className="hidden md:block">
-            <div className="ml-10 flex items-baseline space-x-4">
-             
-                <Link to='/'
-                  key= "home"
-                  className="text-gray-600 hover:text-primary px-3 py-2 rounded-md text-sm font-medium transition-colors duration-300">
-                  Home
-                </Link>
-                <Link
-                  key= "home"
-                  className="text-gray-600 hover:text-primary px-3 py-2 rounded-md text-sm font-medium transition-colors duration-300">
-                  About
-                </Link>
-                <Link
-                  key= "home"
-                  className="text-gray-600 hover:text-primary px-3 py-2 rounded-md text-sm font-medium transition-colors duration-300">
-                  Services
-                </Link>
-                <Link
-                  key= "home"
-                  className="text-gray-600 hover:text-primary px-3 py-2 rounded-md text-sm font-medium transition-colors duration-300">
-                  Contact Us
-                </Link>
-            
+            <div className="ml-10 flex items-baseline space-x-1">
+              {navItems.map((item) => (
+                <a
+                  key={item.name}
+                  href={item.href}
+                  onClick={(e) => handleSmoothScroll(e, item.href)}
+                  className="px-4 py-2 rounded-lg text-sm font-medium text-slate-700 hover:text-blue-600 hover:bg-blue-50 transition-all duration-300 hover:scale-105 cursor-pointer"
+                >
+                  {item.name === "Contact" ? "Contact Us" : item.name}
+                </a>
+              ))}
             </div>
           </div>
+
+          {/* Mobile Menu Button */}
           <div className="md:hidden">
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className="inline-flex items-center justify-center p-2 rounded-md text-gray-600 hover:text-primary focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary"
+              className="inline-flex items-center justify-center p-2 rounded-lg text-slate-600 hover:text-blue-600 hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500 transition-all duration-200"
             >
               <span className="sr-only">Open main menu</span>
               {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
@@ -82,26 +72,27 @@ export default function Navbar02() {
         </div>
       </div>
 
+      {/* Mobile Navigation Menu */}
       <motion.div
-        className="md:hidden"
+        className="md:hidden overflow-hidden"
         initial="closed"
-        animate={isOpen ? 'open' : 'closed'}
+        animate={isOpen ? "open" : "closed"}
         variants={{
-          open: { opacity: 1, height: 'auto' },
+          open: { opacity: 1, height: "auto" },
           closed: { opacity: 0, height: 0 },
         }}
         transition={{ duration: 0.3 }}
       >
-        <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-white shadow-lg">
+        <div className="px-4 pt-4 pb-6 space-y-2 bg-white shadow-lg border-t border-slate-200">
           {navItems.map((item) => (
-            <Link
+            <a
               key={item.name}
-              to={item.href}
-              className="text-gray-600 hover:text-primary block px-3 py-2 rounded-md text-base font-medium transition-colors duration-300"
-              onClick={() => setIsOpen(false)}
+              href={item.href}
+              onClick={(e) => handleSmoothScroll(e, item.href)}
+              className="text-slate-700 hover:text-blue-600 hover:bg-blue-50 block px-4 py-3 rounded-lg text-base font-medium transition-all duration-200 cursor-pointer"
             >
-              {item.name}
-            </Link>
+              {item.name === "Contact" ? "Contact Us" : item.name}
+            </a>
           ))}
         </div>
       </motion.div>

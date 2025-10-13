@@ -1,103 +1,147 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import axios from 'axios';
-import { toast } from "react-toastify";
-import { useDispatch } from "react-redux";
-import { AuthSliceActions } from "../../Store/authSlice";
+"use client"
 
-export default function Login({ setAuth }) {  // Receive setAuth prop to manage authentication state
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
+import { useState } from "react"
+import { useNavigate } from "react-router-dom"
+import axios from "axios"
+import { toast } from "react-toastify"
+import { useDispatch } from "react-redux"
+import { AuthSliceActions } from "../../Store/authSlice"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { X, Newspaper, Mail, Lock, UserPlus } from "lucide-react"
+
+export default function Login({ setAuth }) {
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+  const navigate = useNavigate()
+  const dispatch = useDispatch()
 
   const handleLogin = async (e) => {
-    e.preventDefault();  // Prevent form submission from refreshing the page
+    e.preventDefault()
 
     try {
-      const response = await axios.post("https://quick-public.onrender.com/api/v1/normaluser/login", { email, password });
+      const response = await axios.post("http://localhost:4000/api/v1/normaluser/login", { email, password })
       if (response.data.success) {
-        console.log(response.data);
-        toast.success(response.data.message);
-        localStorage.setItem('token', response.data.token);
-        localStorage.setItem('user','normal')
-        dispatch(AuthSliceActions.authenticate()); // Invoke the action correctly
-        navigate("/");  // Navigate to the main page
+        console.log(response.data)
+        toast.success(response.data.message)
+        localStorage.setItem("token", response.data.token)
+        localStorage.setItem("user", "normal")
+        dispatch(AuthSliceActions.authenticate())
+        navigate("/")
       } else {
-        toast.error(response.data.message);
+        toast.error(response.data.message)
       }
     } catch (error) {
-      // Check if the error has a response from the server
       if (error.response && error.response.data) {
-        // Server responded with a status code other than 2xx
-        toast.error(error.response.data.message || "Login failed. Please try again.");
+        toast.error(error.response.data.message || "Login failed. Please try again.")
       } else if (error.request) {
-        // Request was made but no response was received
-        toast.error("No response from server. Please check your connection.");
+        toast.error("No response from server. Please check your connection.")
       } else {
-        // Something else happened while setting up the request
-        toast.error("An error occurred during login. Please try again.");
+        toast.error("An error occurred during login. Please try again.")
       }
-      console.error("Login error:", error);
+      console.error("Login error:", error)
     }
-  };
+  }
 
   return (
-    <div className="flex justify-center items-center min-h-screen min-w-full">
-      <div className="bg-white text-black shadow-slate-600 shadow-md p-5 rounded-l rounded-md">
-        <form onSubmit={handleLogin} className="relative">
-          <span
-            onClick={() => navigate("/")} // Navigate to home or close the login form
-            className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2 cursor-pointer"
-          >
-            ✕
-          </span>
-          <h3 className="font-bold text-lg mb-4 text-center">Login</h3>
-          {/* email */}
-          <div className="mt-4 space-y-2">
-            <label>Email</label>
-            <br />
-            <input
-              type="email"
-              placeholder="Enter your email here"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="outline-none border rounded-md w-80 px-3 py-1 dark:bg-white dark:text-black"
-              required
-            />
-          </div>
-          {/* password */}
-          <div className="mt-4 space-y-2">
-            <label>Password</label>
-            <br />
-            <input
-              type="password"
-              placeholder="Enter your password here"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="outline-none border rounded-md w-80 px-3 py-1 dark:bg-white dark:text-black"
-              required
-            />
-          </div>
-          <div className="flex justify-around mt-6">
-            <button
-              type="submit"  // Set the button type to submit to trigger form submission
-              className="bg-orange-500 px-3 py-1 rounded-md hover:bg-orange-600 duration-200"
-            >
-              Login
-            </button>
-            <div>
-              Not registered?
-              <a
-                onClick={() => navigate('/normal_user_signup')}  // Navigate to signup page
-                className="underline text-blue-500 cursor-pointer ml-1"
-              >
-                Signup
-              </a>
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 flex items-center justify-center p-4">
+      <div className="w-full max-w-md">
+        <div className="text-center mb-8">
+          <div className="flex items-center justify-center mb-4">
+            <div className="bg-blue-600 p-3 rounded-full">
+              <Newspaper className="h-8 w-8 text-white" />
             </div>
           </div>
-        </form>
+          <h1 className="text-2xl font-bold text-slate-800 mb-2">NewsHub</h1>
+          <p className="text-slate-600">Stay informed with the latest news</p>
+        </div>
+
+        <Card className="shadow-xl border-0 bg-white/80 backdrop-blur-sm">
+          <CardHeader className="space-y-1 pb-6">
+            <div className="flex items-center justify-between">
+              <CardTitle className="text-xl font-semibold text-slate-800">Welcome Back</CardTitle>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => navigate("/")}
+                className="h-8 w-8 p-0 hover:bg-slate-100"
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            </div>
+            <CardDescription className="text-slate-600">
+              Sign in to your account to access personalized news
+            </CardDescription>
+          </CardHeader>
+
+          <CardContent>
+            <form onSubmit={handleLogin} className="space-y-6">
+              <div className="space-y-2">
+                <Label htmlFor="email" className="text-sm font-medium text-slate-700">
+                  Email Address
+                </Label>
+                <div className="relative">
+                  <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
+                  <Input
+                    id="email"
+                    type="email"
+                    placeholder="Enter your email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="pl-10 h-11 border-slate-200 focus:border-blue-500 focus:ring-blue-500"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="password" className="text-sm font-medium text-slate-700">
+                  Password
+                </Label>
+                <div className="relative">
+                  <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
+                  <Input
+                    id="password"
+                    type="password"
+                    placeholder="Enter your password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="pl-10 h-11 border-slate-200 focus:border-blue-500 focus:ring-blue-500"
+                    required
+                  />
+                </div>
+              </div>
+
+              <Button
+                type="submit"
+                className="w-full h-11 bg-blue-600 hover:bg-blue-700 text-white font-medium transition-colors duration-200"
+              >
+                Sign In
+              </Button>
+
+              <div className="text-center pt-4 border-t border-slate-200">
+                <p className="text-sm text-slate-600">
+                  Don't have an account?{" "}
+                  <Button
+                    variant="link"
+                    onClick={() => navigate("/normal_user_signup")}
+                    className="p-0 h-auto font-medium text-blue-600 hover:text-blue-700"
+                  >
+                    <UserPlus className="h-4 w-4 mr-1" />
+                    Create Account
+                  </Button>
+                </p>
+              </div>
+            </form>
+          </CardContent>
+        </Card>
+
+        <div className="text-center mt-6">
+          <p className="text-sm text-slate-500">© 2024 NewsHub. Your trusted news source.</p>
+        </div>
       </div>
     </div>
-  );
+  )
 }

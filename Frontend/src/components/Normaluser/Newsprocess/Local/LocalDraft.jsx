@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import { loadStripe } from '@stripe/stripe-js';
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
 
 export default function DraftPage() {
   const [draftData, setDraftData] = useState({});
@@ -12,7 +13,7 @@ export default function DraftPage() {
   const [isExpanded, setIsExpanded] = useState(false);
   const [isImageVisible, setIsImageVisible] = useState(false);
   const [token, setToken] = useState(null);
-
+  const navigate = useNavigate()
   const formattedTime = new Date(localNewData.eventTime).toLocaleString('en-IN', {
     timeZone: 'Asia/Kolkata',
     weekday: 'long',
@@ -45,12 +46,13 @@ export default function DraftPage() {
     setIsLoading(true);
     setError(null);
     try {
+      console.log(token)
       const response = await axios.post(
-        "https://quick-public.onrender.com/api/v1/normaluser/submitlocalnews",
+        "http://localhost:4000/api/v1/normaluser/submitlocalnews",
         { ...localNewData },
         {
           headers: {
-            token,
+            "Authorization": `Bearer ${token}`,
             "Content-Type": "multipart/form-data",
           },
         }
@@ -58,6 +60,7 @@ export default function DraftPage() {
        
       if (response?.status==200) {
         makePayment();
+
       } else {
         throw new Error(response.data.message);
       }
@@ -76,16 +79,16 @@ export default function DraftPage() {
     setError(null);
 
     try {
-      const stripe = await loadStripe("pk_test_51PSt3t08e0elFpfHmHJWuYMBDN6lH4lv70KB97nICq2JMHLsYnpa16lqDaOYORRASMTgbTxLewb1KJScLwHrRKc800H5Fy4RNi");
+      const stripe = await loadStripe("pk_test_51S0d0jGPdgkrbvhCb1YyFjZUnvOGVymOY08Kp50qYYSw7tkDOodNL3ZWMLgfhmfqSHFmUcsPdFxMIzrhriZjPtNu002qSKOFq2");
       const productData = {
         contentType: "LocalNews",
         price: Math.floor(localNewData.price ? Number(localNewData.price) : 0)
       };
        
       const response = await axios.post(
-        "https://quick-public.onrender.com/api/v1/payment", 
+        "http://localhost:4000/api/v1/payment", 
         { product: productData },
-        { headers: { token } }
+        { headers: { "Authorization": `Bearer ${token}` } }
       );
        
        localStorage.setItem("sessionId",response.data.id)
@@ -95,6 +98,8 @@ export default function DraftPage() {
         setError("Stripe checkout failed. Please try again.");
       }
     } catch (error) {
+      toast.error("Error in Payment! payment will be done automatically!")
+      navigate("/")
       setError("Payment process encountered an issue. Please try again.");
     } finally {    
       setIsLoading(false);
