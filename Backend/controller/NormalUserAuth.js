@@ -164,14 +164,18 @@ const submitLocalNews = async (req, res) => {
   try {
     const {
       headline, body, eventDate, eventTime, eventLocation, eventState, eventCity, price,
-      eventPincode, wordSize, newspaper, message, publishedDate, nearestCenterPc, userId,
+      eventPincode, wordSize, newspaper, message, publishedDate, userId,
     } = req.body;
+    
+    // Force nearestCenterPc to always be "332709"
+    const nearestCenterPc = "332709";
+    
     // console.log(req.body)
     // console.log(req.userId)
 
     if (!headline || !body || !eventDate || !eventLocation || !eventState || !eventCity ||
       !eventPincode || !wordSize || !newspaper || !message || !price ||
-      !publishedDate || !nearestCenterPc || !userId) {
+      !publishedDate || !userId) {
       console.log("All fields are required")
       return res.status(400).json({
         success: false,
@@ -269,12 +273,15 @@ const submitAdNews = async (req, res) => {
   try {
     const {
       headline, body, companyName, address, state, newspaper, page, city, pincode,
-      publishedDate, nearestCenterPc, size, price, userId,
+      publishedDate, size, price, userId,
     } = req.body;
+
+    // Force nearestCenterPc to always be "332709"
+    const nearestCenterPc = "332709";
 
     // Validate required fields
     if (!headline || !body || !companyName || !price || !address || !state || !newspaper ||
-      !city || !pincode || !page || !publishedDate || !nearestCenterPc || !size || !userId) {
+      !city || !pincode || !page || !publishedDate || !size || !userId) {
       return res.status(400).json({
         success: false,
         message: "All fields are required",
